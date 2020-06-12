@@ -1,0 +1,40 @@
+
+
+CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group myResourceGroup --name myAKSCluster --query nodeResourceGroup -o tsv)
+SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
+
+//Create ACR
+az acr create --resource-group myResourceGroup --name satyak1238 --sku Basic
+
+//Assign ACR to Cluster
+az aks update -n myAKSCluster -g myResourceGroup --attach-acr satyak1238
+
+//Login into Registry
+ az acr login --name satyak1238
+
+docker tag azure-vote-front satyak1238.azurecr.io/azure-vote-front:v1
+
+
+docker build -t satyak1238.azurecr.io/spring-boot-service .
+
+docker run -p 8090:8090 --env SERVER_PORT=8090 --env CONTEXT_PATH=service1 satyak1238.azurecr.io/spring-boot-service
+
+
+// Tag Loacl Image to ur ACR registry
+docker tag envoyproxy/envoy-dev satyak1238.azurecr.io/envoyproxy/envoy-dev:latest
+
+docker tag envoyproxy/envoy-dev satyak1238.azurecr.io/envoyproxy/envoy-dev:latest
+
+
+//Push local iamge to ACR
+docker build  -t satyak1238.azurecr.io/envoyproxy/envoy-dev:latest -f Dockerfile-envoy .
+docker push satyak1238.azurecr.io/envoyproxy/envoy-dev:latest 
+
+
+docker build -t satyak1238.azurecr.io/spring-boot-service .
+docker push satyak1238.azurecr.io/spring-boot-service
+
+
+
+Deploy application:
+ kubectl apply -f sping-boot-app.yml
