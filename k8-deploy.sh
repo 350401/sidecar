@@ -9,7 +9,7 @@ docker push satyak1238.azurecr.io/spring-boot-service
 sleep 5
 
 printf " \n *************** Cleanup Existing Deployments ********************* \n\n"
-kubectl delete service forntproxy
+ #kubectl delete service forntproxy
  kubectl delete service springboot-service-1
  kubectl delete service springboot-service-2
 
@@ -25,7 +25,8 @@ printf " \n ******************** Finished Front proxy Deployments **************
 sleep 5
 
 printf "\n\n  ******************** Starting Service Mesh Deployments ******************* \n "
- kubectl apply -f k8/servicemesh-deployment.yml
+ kubectl apply -f k8/service1-deployment.yml
+ kubectl apply -f k8/service2-deployment.yml
 printf " \n ******************** Finished Service Mesh Deployments *******************"
 
 sleep 20

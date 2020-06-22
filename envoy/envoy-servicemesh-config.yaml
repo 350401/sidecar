@@ -1,7 +1,4 @@
 ---
-node:
-  id: "service-mesh-id"
-  cluster: "service-mesh-cluster"
 tracing:
   http:
     name: envoy.zipkin
@@ -23,15 +20,6 @@ static_resources:
           filters:
             - name: "envoy.http_connection_manager"
               config:
-                tracing:
-                  provider:
-                    name: envoy.tracers.zipkin
-                    typed_config:
-                      "@type": type.googleapis.com/envoy.config.trace.v2.ZipkinConfig
-                      collector_cluster: jaeger
-                      collector_endpoint: "/api/v2/spans"
-                      shared_span_context: false
-                      collector_endpoint_version: HTTP_JSON
                 stat_prefix: "egress_http"
                 codec_type: "AUTO"
                 route_config:
@@ -54,6 +42,15 @@ static_resources:
         filters:
           - name: "envoy.http_connection_manager"
             config:
+              tracing:
+                provider:
+                  name: envoy.tracers.zipkin
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.trace.v2.ZipkinConfig
+                    collector_cluster: jaeger
+                    collector_endpoint: "/api/v2/spans"
+                    shared_span_context: false
+                    collector_endpoint_version: HTTP_JSON
               stat_prefix: "ingress_http"
               codec_type: "AUTO"
               route_config:

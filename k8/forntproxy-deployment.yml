@@ -17,8 +17,11 @@ spec:
       containers:
       - name: envoy-fornt-proxy-service
         image: satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest
-        #command: [" --service-cluster front-proxy"]
-        #image: satyak1238.azurecr.io/envoyproxy/envoy-servicemesh:latest
+        imagePullPolicy: Always
+        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster front-proxy"]
+        env:
+          - name: SERVICE_CLUSTER_NAME
+            value: "front-proxy"
         ports:
         - containerPort: 8000
           name: adminport

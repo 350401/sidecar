@@ -1,7 +1,4 @@
 ---
-node:
-  id: "front-proxy"
-  cluster: "front-proxy"
 tracing:
   http:
     name: envoy.zipkin
