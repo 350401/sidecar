@@ -1,10 +1,13 @@
 ---
-#tracing:
- # http:
-   # name: envoy.zipkin
-   # config:
-    #  collector_cluster: jaeger
-     # collector_endpoint: "/api/v1/spans"
+node:
+  id: "front-proxy"
+  cluster: "front-proxy"
+tracing:
+  http:
+    name: envoy.zipkin
+    config:
+      collector_cluster: jaeger
+      collector_endpoint: "/api/v1/spans"
 
 admin:
   access_log_path: /tmp/admin_access.log
@@ -17,13 +20,9 @@ static_resources:
       address:
         socket_address: { address: 0.0.0.0, port_value: 8080 }
       filter_chains:
-        - name: envoy.filters.network.http_connection_manager
-          typed_config:
-            "@type": type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager
-            generate_request_id: true
+        filters:
+          - name: "envoy.http_connection_manager"
             config:
-              #tracing:
-                #operation_name: egress
               tracing:
                 provider:
                   name: envoy.tracers.zipkin

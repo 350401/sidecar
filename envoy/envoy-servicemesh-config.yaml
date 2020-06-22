@@ -1,4 +1,7 @@
 ---
+node:
+  id: "service-mesh-id"
+  cluster: "service-mesh-cluster"
 tracing:
   http:
     name: envoy.zipkin
