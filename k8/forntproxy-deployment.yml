@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forntproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forntproxy
+  template:
+    metadata:
+      labels:
+        app: forntproxy
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: envoy-fornt-proxy-service
+        image: satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest
+        #command: [" --service-cluster front-proxy"]
+        #image: satyak1238.azurecr.io/envoyproxy/envoy-servicemesh:latest
+        ports:
+        - containerPort: 8000
+          name: adminport
+        - containerPort: 8080
+          name: listport
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forntproxy
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: serviceport
+  - port: 8000
+    name: adminport
+  selector:
+    app: forntproxy

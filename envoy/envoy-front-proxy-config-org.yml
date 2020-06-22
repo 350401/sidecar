@@ -1,0 +1,76 @@
+---
+tracing:
+  http:
+    name: envoy.zipkin
+    config:
+      collector_cluster: jaeger
+      collector_endpoint: "/api/v1/spans"
+
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+    socket_address: { address: 0.0.0.0, port_value: 8000 }
+
+static_resources:
+  listeners:
+    - name: engress_listener
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 80 }
+      filter_chains:
+        filters:
+          - name: "envoy.http_connection_manager"
+            config:
+              tracing:
+                operation_name: egress
+              use_remote_address: true
+              add_user_agent: true
+              access_log:
+                - name: envoy.file_access_log
+                  config:
+                    path: /dev/stdout
+                    format: "[ACCESS_LOG][%START_TIME%] \"%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%\" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% \"%REQ(X-FORWARDED-FOR)%\" \"%REQ(USER-AGENT)%\" \"%REQ(X-REQUEST-ID)%\" \"%REQ(:AUTHORITY)%\" \"%UPSTREAM_HOST%\" \"%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%\"\n"
+              stat_prefix: "ingress_443"
+              codec_type: "AUTO"
+              generate_request_id: true
+              route_config:
+                name: "egress-route"
+                virtual_hosts:
+                  - name: "egress-service"
+                    domains: ["*"]
+                    routes:
+                      - match: {prefix: "/service1"}
+                        route: { cluster: "springboot-service-envoy-1"}
+                      - match: {prefix: "/service2"}
+                        route: { cluster: "springboot-service-envoy-2"}
+              http_filters:
+                - name: "envoy.router"
+
+  clusters:
+    -
+      name: "springboot-service-envoy-2"
+      connect_timeout: "0.5s"
+      type: "strict_dns"
+      lb_policy: "ROUND_ROBIN"
+      hosts:
+        -
+          socket_address:
+            address: "springboot-service-2"
+            port_value: 10000
+    -
+      name: "springboot-service-envoy-1"
+      connect_timeout: "0.5s"
+      type: "strict_dns"
+      lb_policy: "ROUND_ROBIN"
+      hosts:
+        -
+          socket_address:
+            address: "springboot-service-1"
+            port_value: 10000
+    - name: jaeger
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        - socket_address:
+            address: zipkin
+            port_value: 9411
