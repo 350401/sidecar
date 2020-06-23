@@ -1,0 +1,3 @@
+FROM prom/prometheus
+COPY metrics/prometheus-config.yml /etc/prometheus.yaml
+CMD [ "--config.file=/etc/prometheus.yaml"]

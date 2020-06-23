@@ -1,7 +1,11 @@
 #!/bin/bash
 
+printf " \n\n\n****************** Build Envoy docker image ***********************\n"
+docker build  -t satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest -f envoy/Dockerfile-envoy-forntproxy .
+
 printf " \n\n *************** Push Images to ACR ********************* \n"
 #az acr login --name satyak1238
+docker build  -t satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest -f envoy/Dockerfile-envoy-forntproxy .
 docker push satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest
 
 
@@ -18,4 +22,4 @@ printf "\n\n  ******************** Starting Front proxy Deployments ************
 printf " \n ******************** Finished Front proxy Deployments *******************"
 sleep 5
 
-sleep 10
+sleep 5

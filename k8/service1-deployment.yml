@@ -29,7 +29,7 @@ spec:
       - name: envoy-service-1
         image: satyak1238.azurecr.io/envoyproxy/envoy-servicemesh:latest
         imagePullPolicy: Always
-        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster service1"]
+        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster service_a", "--service-node service_a"]
         env:
           - name: SERVICE_CLUSTER_NAME
             value: "service1"

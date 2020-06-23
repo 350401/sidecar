@@ -18,7 +18,7 @@ spec:
       - name: envoy-fornt-proxy-service
         image: satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest
         imagePullPolicy: Always
-        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster front-proxy"]
+        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster front-proxy" , "--service-node front-proxy"]
         env:
           - name: SERVICE_CLUSTER_NAME
             value: "front-proxy"

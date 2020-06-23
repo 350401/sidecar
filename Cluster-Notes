@@ -1,7 +1,11 @@
 
+https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
 
-CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group myResourceGroup --name myAKSCluster --query nodeResourceGroup -o tsv)
-SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
+Install the Kubernetes CLI
+az aks install-cli
+
+//Connect to cluster using kubectl
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
 
 //Create ACR
 az acr create --resource-group myResourceGroup --name satyak1238 --sku Basic
@@ -38,3 +42,11 @@ docker push satyak1238.azurecr.io/spring-boot-service
 
 Deploy application:
  kubectl apply -f sping-boot-app.yml
+
+
+ **************8 Helm ***********
+ az acr helm install-cli
+
+ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+ helm search repo stable

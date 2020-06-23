@@ -1,0 +1,7 @@
+FROM grafana/grafana
+COPY metrics/prometheus-config.yml /etc/prometheus.yaml
+
+COPY metrics/grafana/grafana.ini /etc/grafana/grafana.ini
+COPY metrics/grafana/datasource.yaml /etc/grafana/provisioning/datasources/datasource.yaml
+COPY metrics/grafana/dashboard.yaml /etc/grafana/provisioning/dashboards/dashboard.yaml
+COPY metrics/grafana/dashboard.json /etc/grafana/provisioning/dashboards/dashboard.json
