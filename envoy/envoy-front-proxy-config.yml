@@ -8,7 +8,7 @@ tracing:
 
 stats_sinks:
   -
-    name: "envoy.statsd"
+    name: "envoy.stat_sinks.statsd"
     config:
       tcp_cluster_name: "statsd-exporter"
       prefix: front-envoy
@@ -29,6 +29,7 @@ static_resources:
             config:
               access_log:
                 - name: envoy.file_access_log
+
                   config:
                     path: /dev/stdout
                     format: "[ACCESS_LOG][%START_TIME%] \"%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%\" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% \"%REQ(X-FORWARDED-FOR)%\" \"%REQ(USER-AGENT)%\" \"%REQ(X-REQUEST-ID)%\" \"%REQ(:AUTHORITY)%\" \"%UPSTREAM_HOST%\" \"%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%\"\n"
@@ -54,15 +55,15 @@ static_resources:
                     domains: ["*"]
                     routes:
                       - match: {prefix: "/service1"}
-                        route: { cluster: "springboot-service-envoy-1"}
+                        route: { cluster: "service1"}
                       - match: {prefix: "/service2"}
-                        route: { cluster: "springboot-service-envoy-2"}
+                        route: { cluster: "service2"}
               http_filters:
                 - name: "envoy.router"
 
   clusters:
     -
-      name: "springboot-service-envoy-2"
+      name: "service2"
       connect_timeout: "0.5s"
       type: "strict_dns"
       lb_policy: "ROUND_ROBIN"
@@ -72,7 +73,7 @@ static_resources:
             address: "springboot-service-2"
             port_value: 10000
     -
-      name: "springboot-service-envoy-1"
+      name: "service1"
       connect_timeout: "0.5s"
       type: "strict_dns"
       lb_policy: "ROUND_ROBIN"
@@ -100,5 +101,5 @@ static_resources:
       hosts:
         -
           socket_address:
-            address: "statsd_exporter"
+            address: "statsd-exporter"
             port_value: 9125

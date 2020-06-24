@@ -7,9 +7,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    - port: {{ .Values.service.publishport }}
+      name: pport
+    - port: {{ .Values.service.uiport }}
+      name: uiport
   selector:
     {{- include "statsd-exporter.selectorLabels" . | nindent 4 }}

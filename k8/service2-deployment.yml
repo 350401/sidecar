@@ -29,7 +29,7 @@ spec:
       - name: envoy-service-2
         image: satyak1238.azurecr.io/envoyproxy/envoy-servicemesh:latest
         imagePullPolicy: Always
-        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster service_b", "--service-node service_b"]
+        command: ["envoy" ,"-c", "/etc/envoy/envoy.yaml", "--service-cluster service2", "--service-node service2"]
         env:
           - name: SERVICE_CLUSTER_NAME
             value: "service2"
@@ -44,13 +44,15 @@ kind: Service
 metadata:
   name: springboot-service-2
 spec:
-  #type: LoadBalancer
+  type: LoadBalancer
   ports:
   - port: 8090
-    name: s1appport
+    name: appport
   - port: 9000
     name: s1envporteng
   - port: 10000
-    name: s1envporting   
+    name: s1envporting
+  - port: 8000
+    name: adminport
   selector:
     app: springboot-service-2

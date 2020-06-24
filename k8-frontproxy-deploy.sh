@@ -5,7 +5,6 @@ docker build  -t satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest -f env
 
 printf " \n\n *************** Push Images to ACR ********************* \n"
 #az acr login --name satyak1238
-docker build  -t satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest -f envoy/Dockerfile-envoy-forntproxy .
 docker push satyak1238.azurecr.io/envoyproxy/envoy-frontproxy:latest
 
 

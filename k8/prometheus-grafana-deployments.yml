@@ -28,7 +28,7 @@ kind: Service
 metadata:
   name: statsd-exporter
 spec:
-  #type: LoadBalancer
+  type: LoadBalancer
   ports:
     - port: 9125
       name: port1

@@ -8,10 +8,10 @@ tracing:
 
 stats_sinks:
   -
-    name: "envoy.statsd"
+    name: "envoy.stat_sinks.statsd"
     config:
       tcp_cluster_name: "statsd-exporter"
-      prefix: front-envoy
+      prefix: service1
 
 admin:
   access_log_path: /tmp/admin_access.log
@@ -36,9 +36,9 @@ static_resources:
                       domains: ["*"]
                       routes:
                         - match: {prefix: "/service1"}
-                          route: { cluster: "springboot-service-envoy-1"}
+                          route: { cluster: "service1"}
                         - match: {prefix: "/service2"}
-                          route: { cluster: "springboot-service-envoy-2"}
+                          route: { cluster: "service2"}
                 http_filters:
                   - name: "envoy.router"
 
@@ -100,7 +100,7 @@ static_resources:
             address: "springboot-service-1"
             port_value: 8080
     -
-      name: "springboot-service-envoy-2"
+      name: "service2"
       connect_timeout: "0.5s"
       type: "strict_dns"
       lb_policy: "ROUND_ROBIN"
@@ -110,7 +110,7 @@ static_resources:
             address: "springboot-service-2"
             port_value: 10000
     -
-      name: "springboot-service-envoy-1"
+      name: "service1"
       connect_timeout: "0.5s"
       type: "strict_dns"
       lb_policy: "ROUND_ROBIN"
@@ -138,5 +138,5 @@ static_resources:
       hosts:
         -
           socket_address:
-            address: "statsd_exporter"
+            address: "statsd-exporter"
             port_value: 9125
